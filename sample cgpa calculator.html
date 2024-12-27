@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGPA Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-size: 14px;
+            color: #555;
+        }
+
+        input {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #courses, #previousSemesters {
+            margin-top: 15px;
+        }
+
+        .course {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .course label {
+            flex: 1;
+        }
+
+        .course input {
+            flex: 2;
+        }
+
+        #result {
+            margin-top: 15px;
+            font-size: 18px;
+            color: #333;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CGPA Calculator</h1>
+        <form id="cgpaForm">
+            <label for="semester">Semester Number:</label>
+            <input type="number" id="semester" min="1" required>
+
+            <label for="numCourses">Number of Courses:</label>
+            <input type="number" id="numCourses" min="1" required>
+
+            <button type="button" id="addCourses">Add Courses</button>
+
+            <div id="courses"></div>
+
+            <div id="previousSemesters" style="display: none;">
+                <label for="previousGPA">Average GPA of Previous Semesters:</label>
+                <input type="number" id="previousGPA" step="0.01" min="0" placeholder="Enter average GPA up to last semester">
+            </div>
+
+            <button type="submit">Calculate GPA & CGPA</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById("addCourses").addEventListener("click", () => {
+            const numCourses = parseInt(document.getElementById("numCourses").value);
+            const coursesDiv = document.getElementById("courses");
+            coursesDiv.innerHTML = ""; // Clear previous inputs
+
+            for (let i = 0; i < numCourses; i++) {
+                const courseDiv = document.createElement("div");
+                courseDiv.classList.add("course");
+                courseDiv.innerHTML = `
+                    <label>Course ${i + 1} Grade (out of 100):</label>
+                    <input type="number" min="0" max="100" step="1" class="grade" required>
+                    <label>Credits:</label>
+                    <input type="number" min="1" class="credits" required>
+                `;
+                coursesDiv.appendChild(courseDiv);
+            }
+        });
+
+        document.getElementById("cgpaForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const semester = parseInt(document.getElementById("semester").value);
+            const grades = document.querySelectorAll(".grade");
+            const credits = document.querySelectorAll(".credits");
+
+            let totalCredits = 0;
+            let weightedGradePoints = 0;
+
+            // Calculate GPA for the current semester
+            for (let i = 0; i < grades.length; i++) {
+                const grade = parseFloat(grades[i].value);
+                const credit = parseInt(credits[i].value);
+
+                const gradePoint = grade / 10; // Convert marks to grade points
+                totalCredits += credit;
+                weightedGradePoints += gradePoint * credit;
+            }
+
+            const semesterGPA = (weightedGradePoints / totalCredits).toFixed(2);
+
+            let totalGPA = parseFloat(semesterGPA) * totalCredits;
+            let totalSemesters = 1;
+
+            // If semester > 1, include previous semesters
+            if (semester > 1) {
+                const previousGPA = parseFloat(document.getElementById("previousGPA").value || 0);
+                const previousCredits = (semester - 1) * totalCredits;
+                totalGPA += previousGPA * previousCredits;
+                totalSemesters = semester;
+            }
+
+            const cgpa = (totalGPA / (totalSemesters * totalCredits)).toFixed(2);
+
+            // Show results
+            document.getElementById("result").innerHTML = `
+                <p>GPA for Semester ${semester}: ${semesterGPA}</p>
+                <p>CGPA after Semester ${semester}: ${cgpa}</p>
+            `;
+
+            // Show previous GPA input if semester > 1
+            if (semester > 1) {
+                document.getElementById("previousSemesters").style.display = "block";
+            }
+        });
+    </script>
+</body>
+</html>
+
+
