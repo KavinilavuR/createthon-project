@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Domestic Flights in India</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .filter {
+      margin: 20px 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    select, button {
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .flights {
+      margin-top: 20px;
+    }
+
+    .flight-card {
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      background: #f9f9f9;
+    }
+
+    .flight-card h3 {
+      margin: 0 0 10px;
+      color: #007bff;
+    }
+
+    .flight-card p {
+      margin: 5px 0;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Available Flights in India</h1>
+    <div class="filter">
+      <select id="from">
+        <option value="">From</option>
+        <option value="Delhi">Delhi</option>
+        <option value="Mumbai">Mumbai</option>
+        <option value="Bangalore">Bangalore</option>
+        <option value="Chennai">Chennai</option>
+        <option value="Kolkata">Kolkata</option>
+      </select>
+      <select id="to">
+        <option value="">To</option>
+        <option value="Delhi">Delhi</option>
+        <option value="Mumbai">Mumbai</option>
+        <option value="Bangalore">Bangalore</option>
+        <option value="Chennai">Chennai</option>
+        <option value="Kolkata">Kolkata</option>
+      </select>
+      <button onclick="filterFlights()">Search</button>
+    </div>
+    <div id="flights" class="flights">
+      <!-- Flight cards will be injected here -->
+    </div>
+  </div>
+  <script>
+    const flightsData = [
+      { from: "Delhi", to: "Mumbai", airline: "IndiGo", price: "₹4500" },
+      { from: "Mumbai", to: "Bangalore", airline: "SpiceJet", price: "₹4000" },
+      { from: "Bangalore", to: "Delhi", airline: "Air India", price: "₹5500" },
+      { from: "Chennai", to: "Kolkata", airline: "GoAir", price: "₹5000" },
+      { from: "Kolkata", to: "Mumbai", airline: "Vistara", price: "₹4700" },
+      { from: "Delhi", to: "Chennai", airline: "IndiGo", price: "₹4200" },
+    ];
+
+    function displayFlights(flights) {
+      const flightsContainer = document.getElementById("flights");
+      flightsContainer.innerHTML = ""; // Clear previous results
+
+      if (flights.length === 0) {
+        flightsContainer.innerHTML = "<p>No flights found</p>";
+        return;
+      }
+
+      flights.forEach((flight) => {
+        const flightCard = document.createElement("div");
+        flightCard.classList.add("flight-card");
+        flightCard.innerHTML = `
+          <h3>${flight.airline}</h3>
+          <p><strong>From:</strong> ${flight.from}</p>
+          <p><strong>To:</strong> ${flight.to}</p>
+          <p><strong>Price:</strong> ${flight.price}</p>
+        `;
+        flightsContainer.appendChild(flightCard);
+      });
+    }
+
+    function filterFlights() {
+      const from = document.getElementById("from").value;
+      const to = document.getElementById("to").value;
+
+      const filteredFlights = flightsData.filter((flight) => {
+        return (
+          (from === "" || flight.from === from) &&
+          (to === "" || flight.to === to)
+        );
+      });
+
+      displayFlights(filteredFlights);
+    }
+
+    // Display all flights initially
+    displayFlights(flightsData);
+  </script>
+  <button><a href="C:\Users\kavin\Downloads\flight booking\inventory system.html">get your ticket</button>
+</body>
+</html>
